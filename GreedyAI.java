@@ -1,7 +1,7 @@
 // GreedyAI class - implements greedy algorithm for CPU moves
 // Greedy algorithm always picks the move that gives immediate best score
 
-public class GreedyAI {
+public class GreedyAI implements AI {
     
     public int getBestMove(GameBoard board) {
         int cols = board.getCols();

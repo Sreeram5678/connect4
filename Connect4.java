@@ -15,8 +15,9 @@ public class Connect4 extends JFrame {
     private JLabel statusLabel;
     private JPanel statusPanel;
     private boolean isPlayerTurn;
-    private GreedyAI cpu;
+    private AI cpu;
     private JFrame settingsFrame;
+    private String difficulty = "Easy"; // "Easy" or "Hardcore"
     
     // Score tracking
     private int playerWins = 0;
@@ -44,24 +45,32 @@ public class Connect4 extends JFrame {
         settingsFrame.add(titleLabel, BorderLayout.NORTH);
         
         // Settings panel
-        JPanel settingsPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel settingsPanel = new JPanel(new GridLayout(4, 2, 10, 10));
         settingsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         settingsPanel.setBackground(new Color(240, 240, 240));
-        
+
         JLabel rowsLabel = new JLabel("Number of Rows:");
         rowsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         JSpinner rowsSpinner = new JSpinner(new SpinnerNumberModel(6, 4, 10, 1));
         rowsSpinner.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
         JLabel colsLabel = new JLabel("Number of Columns:");
         colsLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         JSpinner colsSpinner = new JSpinner(new SpinnerNumberModel(7, 4, 10, 1));
         colsSpinner.setFont(new Font("Arial", Font.PLAIN, 14));
-        
+
+        JLabel difficultyLabel = new JLabel("Difficulty:");
+        difficultyLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        JComboBox<String> difficultyCombo = new JComboBox<>(new String[]{"Easy", "Hardcore"});
+        difficultyCombo.setFont(new Font("Arial", Font.PLAIN, 14));
+        difficultyCombo.setSelectedItem(difficulty);
+
         settingsPanel.add(rowsLabel);
         settingsPanel.add(rowsSpinner);
         settingsPanel.add(colsLabel);
         settingsPanel.add(colsSpinner);
+        settingsPanel.add(difficultyLabel);
+        settingsPanel.add(difficultyCombo);
         
         // Start button
         JButton startButton = new JButton("Start Game");
@@ -73,6 +82,7 @@ public class Connect4 extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 rows = (Integer) rowsSpinner.getValue();
                 cols = (Integer) colsSpinner.getValue();
+                difficulty = (String) difficultyCombo.getSelectedItem();
                 settingsFrame.dispose();
                 initializeGame();
             }
@@ -89,7 +99,11 @@ public class Connect4 extends JFrame {
     
     private void initializeGame() {
         board = new GameBoard(rows, cols);
-        cpu = new GreedyAI();
+        if ("Easy".equals(difficulty)) {
+            cpu = new GreedyAI();
+        } else if ("Hardcore".equals(difficulty)) {
+            cpu = new HardcoreAI();
+        }
         isPlayerTurn = true;
         
         setTitle("Connect 4 Game");
